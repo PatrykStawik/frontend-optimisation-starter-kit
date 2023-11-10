@@ -77,6 +77,12 @@ gulp.task('purgecss', () => {
       .pipe(gulp.dest(dist_assets_folder + 'css'))
 })
 
+gulp.task('minify-css', () => {
+  return gulp.src(dist_assets_folder + 'css/**/*.css')
+    .pipe(cleanCSS({compatibility: 'ie8'}))
+    .pipe(gulp.dest('dist'));
+});
+
 gulp.task('js', () => {
   return gulp.src([ src_assets_folder + 'js/**/*.js', '!' + src_assets_folder + 'js/homework/**/*.js' ], { since: gulp.lastRun('js') })
     .pipe(plumber())
@@ -101,12 +107,12 @@ gulp.task('js-copy', () => {
 });
 
 gulp.task('js-minified', () => {
-  return gulp.src([ 
-    src_assets_folder + 'js/homework/*.js', 
+  return gulp.src([
+    src_assets_folder + 'js/homework/*.js',
     src_assets_folder + 'js/homework/components/*.js',
-    src_assets_folder + 'js/homework/vendor/*.js', 
-    src_assets_folder + 'js/homework/vendor/jquery/dist/*.js', 
-    src_assets_folder + 'js/homework/vendor/requirejs/*.js', 
+    src_assets_folder + 'js/homework/vendor/*.js',
+    src_assets_folder + 'js/homework/vendor/jquery/dist/*.js',
+    src_assets_folder + 'js/homework/vendor/requirejs/*.js',
   ], { since: gulp.lastRun('js-minified'), base: src_assets_folder + 'js/homework' })
     .pipe(uglify())
     .pipe(gulp.dest(dist_assets_folder + 'js/homework'))
@@ -185,19 +191,19 @@ gulp.task('generate-critical-css', (cb) => {
 });
 
 gulp.task(
-  'build', 
+  'build',
   gulp.series(
-    'clear', 
-    'html', /* replace the 'html' with 'html-minified' if you need minification */ 
-    'sass', 
-    'js', 
-    'js-copy', /* replace the 'js-copy' with 'js-minified' if you need minification */
-    'fonts', 
+    'clear',
+    'html-minified', /* replace the 'html' with 'html-minified' if you need minification */
+    'sass',
+    'js',
+    'js-minified', /* replace the 'js-copy' with 'js-minified' if you need minification */
+    'fonts',
     'videos',
-    'extra-files', 
-    'images', 
-    /*'purgecss',*/
-    /*'generate-critical-css',*/
+    'extra-files',
+    'images',
+    'purgecss',
+    // 'generate-critical-css'
     /*'generate-service-worker',*/
   )
 );
